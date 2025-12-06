@@ -1,17 +1,22 @@
 const express = require('express');
 const app = express();
 
-app.set('view engine', 'ejs');
-
-const postsRouter = require('./routes/posts');
-app.use('/posts', postsRouter);
-
 const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts');
+
+app.set('view engine', 'ejs');
+app.use(logger);
+app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
+
+
+app.use('/posts', postsRouter);
 app.use('/users', usersRouter);
 
-app.get('/', (req, res) => {
-    console.log('Hello World');
-    res.render("index", {user: "Mengs"});
-});
 
 app.listen(3032);
+
+function logger(req, res, next) {
+    console.log(`Page Accessed: ${req.originalUrl}`);
+    next();
+}
